@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Andralert</string>
+    <string name="action_settings">Settings</string>
+    <string name="test_menu">Test Menu</string>
+    <string name="action_test">Test Alerts</string>
+    <string name="settings">Settings</string>
+    <string name="threshold">Threshold</string>
+    <string name="alert_heading">Alert Settings</string>
+    <string name="alert_phone">Alert Phone Number</string>
+    <string name="alert_phone_summary">Dial this number when alarm is triggered</string>
+    <string name="sound_threshold">Sound Threshold</string>
+    <string name="sound_threshold_summary">Sound level at which to dial alert number where 1 is the most sensitive</string>
+    <string name="delay">Activation Delay</string>
+    <string name="delay_summary">Set the delay before activating the alarm</string>
+    <string name="activate_alarm">Activate</string>
+    <string name="activate">ACTIVATE</string>
+    <string name="enable_sms">Enable SMS Alert</string>
+    <string name="enable_sms_summary">Select to send an SMS alert</string>
+    <string name="enable_photos">Enable Photos</string>
+    <string name="enable_photos_summary">Select to take photos on alert</string>
+    <string name="enable_autoactivate">Enable Auto Activate</string>
+    <string name="enable_auto_summary">Enable activation on app start</string>
+    <string name="enable_boot">Enable Boot Start</string>
+    <string name="enable_boot_summary">Enable App Start on Device Boot</string>
+    <string name="enable_call">Enable Call Alert</string>
+    <string name="enable_call_summary">Select to call stored number on alert</string>
+    <string name="stop">STOP</string>
+    <string name="action_exit">Exit</string>
+    <string name="call_now">Call Now</string>
+    <string name="text_now">Text Now</string>
+    <string name="phone_number">00447951991772</string>
+
+</resources>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen
+		xmlns:android="http://schemas.android.com/apk/res/android">
+        <PreferenceCategory
+			android:title="@string/alert_heading">
+			<ListPreference
+				android:key="activation_delay"
+				android:title="@string/delay"
+				android:summary="@string/delay_summary"
+				android:entries="@array/entries_delay"
+				android:entryValues="@array/values_delay"
+				android:dialogTitle="@string/delay"
+				android:defaultValue="30000" />
+
+			<ListPreference
+				android:key="threshold"
+				android:title="@string/sound_threshold"
+				android:summary="@string/sound_threshold_summary"
+				android:entries="@array/entries_threshold"
+				android:entryValues="@array/entries_threshold"
+				android:dialogTitle="@string/threshold"
+				android:defaultValue="6" />
+
+			<EditTextPreference
+				android:key="alert_phone_number"
+				android:title="@string/alert_phone"
+				android:summary="@string/alert_phone_summary"
+				android:dialogTitle="@string/alert_phone"
+				android:defaultValue="@string/phone_number" />
+
+
+			<CheckBoxPreference
+				android:key="enable_sms"
+				android:title="@string/enable_sms"
+				android:summary="@string/enable_sms_summary"
+				android:dialogTitle="@string/enable_sms"
+				android:defaultValue="false"/>
+
+			<CheckBoxPreference
+				android:key="enable_call"
+				android:title="@string/enable_call"
+				android:summary="@string/enable_call_summary"
+				android:dialogTitle="@string/enable_call"
+				android:defaultValue="true"/>
+
+			<CheckBoxPreference
+				android:key="enable_photos"
+				android:title="@string/enable_photos"
+				android:summary="@string/enable_photos_summary"
+				android:dialogTitle="@string/enable_photos"
+				android:defaultValue="false"/>
+
+			<CheckBoxPreference
+				android:key="enable_boot"
+				android:title="@string/enable_autoactivate"
+				android:summary="@string/enable_auto_summary"
+				android:dialogTitle="@string/enable_autoactivate"
+				android:defaultValue="false"/>
+
+			<CheckBoxPreference
+				android:key="enable_boot"
+				android:title="@string/enable_boot"
+				android:summary="@string/enable_boot_summary"
+				android:dialogTitle="@string/enable_boot"
+				android:defaultValue="false"/>
+
+        </PreferenceCategory>
+
+</PreferenceScreen>
