@@ -4,12 +4,10 @@
    Sort problems with android 10 SDK 29
         Won't allow service to start dialler if screen off
    Add video recording time?  and time lapse option? to preferences
-   Set up Git
    Text message status, start app? turn alarm on and off
    Add movement/vibration detection?
    Add Motion detection?
    Use Twitter or similar for alerts? If internet available
-   record audio when triggered and send to Google drive?
    Upload data to Google Drive?
  */
 
