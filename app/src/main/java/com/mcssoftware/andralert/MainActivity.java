@@ -3,7 +3,7 @@
    ---------------------------
    Sort problems with android 10 SDK 29
         Won't allow service to start dialler if screen off
-   Add Video option and recording time to preferences
+   Add video recording time?  and time lapse option? to preferences
    Set up Git
    Text message status, start app? turn alarm on and off
    Add movement/vibration detection?
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity{
     public static boolean enableSMS;
     public static boolean enableCall;
     public static boolean enablePhotos;
+    public static boolean enableVideo;
     public static boolean enableBoot;
     public static boolean enableAutoActivate;
 
@@ -225,6 +226,7 @@ public class MainActivity extends AppCompatActivity{
         enableCall = prefs.getBoolean("enable_call", true);
         enableSMS = prefs.getBoolean("enable_sms", false);
         enablePhotos = prefs.getBoolean("enable_photos", false);
+        enableVideo = prefs.getBoolean("enable_video", false);
         enableBoot = prefs.getBoolean("enable_boot", false);
         enableAutoActivate = prefs.getBoolean("enable_boot", false);
         phoneNumber = prefs.getString("alert_phone_number", "00447951991772");

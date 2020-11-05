@@ -52,6 +52,13 @@
 				android:defaultValue="false"/>
 
 			<CheckBoxPreference
+				android:key="enable_video"
+				android:title="@string/enable_video"
+				android:summary="@string/enable_video_summary"
+				android:dialogTitle="@string/enable_video"
+				android:defaultValue="false"/>
+
+			<CheckBoxPreference
 				android:key="enable_boot"
 				android:title="@string/enable_autoactivate"
 				android:summary="@string/enable_auto_summary"

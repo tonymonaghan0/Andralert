@@ -17,11 +17,13 @@
     <string name="enable_sms">Enable SMS Alert</string>
     <string name="enable_sms_summary">Select to send an SMS alert</string>
     <string name="enable_photos">Enable Photos</string>
-    <string name="enable_photos_summary">Select to take photos on alert</string>
+    <string name="enable_photos_summary">Select to take photos on alert. This disables video recording</string>
     <string name="enable_autoactivate">Enable Auto Activate</string>
-    <string name="enable_auto_summary">Enable activation on app start</string>
+    <string name="enable_auto_summary">Enable activation on Andralert start</string>
     <string name="enable_boot">Enable Boot Start</string>
-    <string name="enable_boot_summary">Enable App Start on Device Boot</string>
+    <string name="enable_boot_summary">Enable Andralert start on device boot</string>
+    <string name="enable_video">Enable Video</string>
+    <string name="enable_video_summary">Select to record Video on alert</string>
     <string name="enable_call">Enable Call Alert</string>
     <string name="enable_call_summary">Select to call stored number on alert</string>
     <string name="stop">STOP</string>

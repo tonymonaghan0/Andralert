@@ -29,6 +29,7 @@ import java.lang.reflect.Method;
 
 import static com.mcssoftware.andralert.MainActivity.enableCall;
 import static com.mcssoftware.andralert.MainActivity.enablePhotos;
+import static com.mcssoftware.andralert.MainActivity.enableVideo;
 import static com.mcssoftware.andralert.MainActivity.noiseThreshold;
 import static com.mcssoftware.andralert.MainActivity.enableSMS;
 
@@ -78,17 +79,18 @@ public class AudioAlertService extends Service {
                         endCall(callEndDelay);
                     }
 
-/*                    //Start CameraService
+                    //Start CameraService overrides VideoService
                     if (enablePhotos){
                         Intent svc = new Intent(getBaseContext(), CameraService.class);
                         startService(svc);
-                    }*/
-
-                    //Start VideoService
-                    if (enablePhotos){
-                        Intent svc = new Intent(getBaseContext(), VideoService.class);
-                        startService(svc);
+                    }else{
+                        //Start VideoService
+                        if (enableVideo){
+                            Intent svc = new Intent(getBaseContext(), VideoService.class);
+                            startService(svc);
+                        }
                     }
+
 
                     //Stop audio monitor
                     stopAudioMonitor();
@@ -169,7 +171,6 @@ public class AudioAlertService extends Service {
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-//TODO      Change to save to a file when triggered?
             mRecorder.setOutputFile("/dev/null");
             try {
                 mRecorder.prepare();
