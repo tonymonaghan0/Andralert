@@ -74,8 +74,8 @@ public class AudioAlertService extends Service {
                         //Call phone number in preferences
                         TestAlertsActivity.callNumber(mContext);
 
-                        //End call after delay NB don't make it too small 15 will ring for about 4s
-                        int callEndDelay = 15;
+                        //End call after delay. NB don't make it too small 20 will ring for about 10s
+                        int callEndDelay = 20 ;
                         endCall(callEndDelay);
                     }
 

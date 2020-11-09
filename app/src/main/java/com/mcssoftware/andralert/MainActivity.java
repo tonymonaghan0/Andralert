@@ -2,7 +2,11 @@
    Works on API 16 Android 4.1
    ---------------------------
    Sort problems with android 10 SDK 29
-        Won't allow service to start dialler if screen off
+        Won't allow service to start dialler if screen off;
+        Will do if draw over other apps selected but S2 does
+        not support this?
+   S4 on auto-boot and auto-activate doesn't start alerts till home button pressed/screen activated
+   Start photos and video after call alert ended
    Add video recording time?  and time lapse option? to preferences
    Text message status, start app? turn alarm on and off
    Add movement/vibration detection?
