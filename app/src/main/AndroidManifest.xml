@@ -65,7 +65,10 @@
             android:name=".AudioAlertService"
             android:enabled="true">
         </service>
-
+        <service
+            android:name=".SensorAlertService"
+            android:enabled="true">
+        </service>
         <receiver android:enabled="true" android:name=".MainActivity$BootUpReceiver"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>

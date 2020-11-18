@@ -5,14 +5,17 @@
         Won't allow service to start dialler if screen off;
         Will do if draw over other apps selected but S2 does
         not support this?
-   S4 on auto-boot and auto-activate doesn't start alerts till home button pressed/screen activated
-   Start photos and video after call alert ended
+   endCall method seems to stop phone audio on S4, still calls though?
+   Create option to monitor movement sensors?
+   Add timestamp to photos and videos
+   On auto-boot and auto-activate doesn't start alerts till home button pressed/screen activated
+   Start photos and video after call alert ended???
    Add video recording time?  and time lapse option? to preferences
    Text message status, start app? turn alarm on and off
-   Add movement/vibration detection?
    Add Motion detection?
    Use Twitter or similar for alerts? If internet available
    Upload data to Google Drive?
+   Make endCall an option?
  */
 
 package com.mcssoftware.andralert;
@@ -80,6 +83,7 @@ public class MainActivity extends AppCompatActivity{
     public static boolean enableVideo;
     public static boolean enableBoot;
     public static boolean enableAutoActivate;
+    public static boolean enableSensorAlerts;
 
     Button btnActivate;
     public boolean blnAlarmOn = false;
@@ -230,8 +234,9 @@ public class MainActivity extends AppCompatActivity{
         enablePhotos = prefs.getBoolean("enable_photos", false);
         enableVideo = prefs.getBoolean("enable_video", false);
         enableBoot = prefs.getBoolean("enable_boot", false);
-        enableAutoActivate = prefs.getBoolean("enable_boot", false);
+        enableAutoActivate = prefs.getBoolean("enable_auto", false);
         phoneNumber = prefs.getString("alert_phone_number", "00447951991772");
+        enableSensorAlerts = prefs.getBoolean("enable_sensor", false);
     }
 
     @Override
@@ -240,8 +245,19 @@ public class MainActivity extends AppCompatActivity{
         readApplicationPreferences();
     }
 
-    public void stopAlarm(){
+    @Override
+    public void onStop() {
+        super.onStop();
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopServices();
+    }
+
+    public void stopAlarm(){
         //Press STOP and set to ACTIVATE
         btnActivate.setText(R.string.activate);
         blnAlarmOn = false;
@@ -250,9 +266,44 @@ public class MainActivity extends AppCompatActivity{
             counter = 0;
         }
 
+        stopServices();
+/*
         //Stop AudioAlertService if running
         if(isMyServiceRunning(AudioAlertService.class)){
             Intent svc = new Intent(getBaseContext(), AudioAlertService.class);
+            stopService(svc);
+        }
+
+        //Stop SensorAlertService if running
+        if(isMyServiceRunning(SensorAlertService.class)){
+            Intent svc = new Intent(getBaseContext(), SensorAlertService.class);
+            stopService(svc);
+        }
+
+        //Stop CameraService if running
+        if(isMyServiceRunning(CameraService.class)){
+            Intent svc = new Intent(getBaseContext(), CameraService.class);
+            stopService(svc);
+        }
+
+        //Stop VideoService if running
+        if(isMyServiceRunning(VideoService.class)){
+            Intent svc = new Intent(getBaseContext(), VideoService.class);
+            stopService(svc);
+        }*/
+    }
+
+    public void stopServices(){
+
+        //Stop AudioAlertService if running
+        if(isMyServiceRunning(AudioAlertService.class)){
+            Intent svc = new Intent(getBaseContext(), AudioAlertService.class);
+            stopService(svc);
+        }
+
+        //Stop SensorAlertService if running
+        if(isMyServiceRunning(SensorAlertService.class)){
+            Intent svc = new Intent(getBaseContext(), SensorAlertService.class);
             stopService(svc);
         }
 
@@ -270,7 +321,6 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void activateAlarm(){
-
         //Press ACTIVATE and set to STOP
         timer = new CountDownTimer(delay, 1000){
             public void onTick(long millisUntilFinished){
@@ -284,6 +334,11 @@ public class MainActivity extends AppCompatActivity{
                 //Start AudioAlertService
                 Intent svc = new Intent(getBaseContext(), AudioAlertService.class);
                 startService(svc);
+                //Start SensorAlertService
+                if (enableSensorAlerts) {
+                    Intent svc2 = new Intent(getBaseContext(), SensorAlertService.class);
+                    startService(svc2);
+                }
             }
         };
         timer.start();

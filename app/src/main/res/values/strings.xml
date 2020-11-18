@@ -18,10 +18,12 @@
     <string name="enable_sms_summary">Select to send an SMS alert</string>
     <string name="enable_photos">Enable Photos</string>
     <string name="enable_photos_summary">Select to take photos on alert. This disables video recording</string>
-    <string name="enable_autoactivate">Enable Auto Activate</string>
+    <string name="enable_auto_activate">Enable Auto Activate</string>
     <string name="enable_auto_summary">Enable activation on Andralert start</string>
     <string name="enable_boot">Enable Boot Start</string>
     <string name="enable_boot_summary">Enable Andralert start on device boot</string>
+    <string name="enable_sensor">Enable Sensor</string>
+    <string name="enable_sensor_summary">Enable motion sensor alerts</string>
     <string name="enable_video">Enable Video</string>
     <string name="enable_video_summary">Select to record Video on alert</string>
     <string name="enable_call">Enable Call Alert</string>
@@ -30,6 +32,7 @@
     <string name="action_exit">Exit</string>
     <string name="call_now">Call Now</string>
     <string name="text_now">Text Now</string>
+    <string name="test_alerts">Test Active Alerts</string>
     <string name="phone_number">00447951991772</string>
 
 </resources>

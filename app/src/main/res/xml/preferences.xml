@@ -59,10 +59,10 @@
 				android:defaultValue="false"/>
 
 			<CheckBoxPreference
-				android:key="enable_boot"
-				android:title="@string/enable_autoactivate"
+				android:key="enable_auto_activate"
+				android:title="@string/enable_auto_activate"
 				android:summary="@string/enable_auto_summary"
-				android:dialogTitle="@string/enable_autoactivate"
+				android:dialogTitle="@string/enable_auto_activate"
 				android:defaultValue="false"/>
 
 			<CheckBoxPreference
@@ -70,6 +70,13 @@
 				android:title="@string/enable_boot"
 				android:summary="@string/enable_boot_summary"
 				android:dialogTitle="@string/enable_boot"
+				android:defaultValue="false"/>
+
+			<CheckBoxPreference
+				android:key="enable_sensor"
+				android:title="@string/enable_sensor"
+				android:summary="@string/enable_sensor_summary"
+				android:dialogTitle="@string/enable_sensor"
 				android:defaultValue="false"/>
 
         </PreferenceCategory>

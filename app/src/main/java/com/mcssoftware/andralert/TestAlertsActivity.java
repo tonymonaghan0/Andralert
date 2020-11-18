@@ -1,10 +1,18 @@
 package com.mcssoftware.andralert;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.telecom.TelecomManager;
 import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,15 +20,37 @@ import android.widget.Button;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import java.lang.reflect.Method;
+
+import static com.mcssoftware.andralert.MainActivity.enableCall;
+import static com.mcssoftware.andralert.MainActivity.enablePhotos;
+import static com.mcssoftware.andralert.MainActivity.enableSMS;
+import static com.mcssoftware.andralert.MainActivity.enableVideo;
 import static com.mcssoftware.andralert.MainActivity.phoneNumber;
 
+
+
 public class TestAlertsActivity extends AppCompatActivity  {
+
+    //Used to pass context to static methods in TestAlertsActivity
+    Context mContext = this;
+    //Handler for delay till dialler stops in endCall
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    public String alertType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_test);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            alertType = bundle.getString("alertType");
+            startAlerts(mContext, alertType);
+        }
 
         //Add back arrow to action bar
         ActionBar actionBar = getSupportActionBar();
@@ -46,6 +76,15 @@ public class TestAlertsActivity extends AppCompatActivity  {
                 sendSmsByManager(smsBody);
             }
         });
+
+        Button button3 = findViewById(R.id.button3);
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startAlerts(mContext, "Test alert");
+            }
+        });
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -62,7 +101,7 @@ public class TestAlertsActivity extends AppCompatActivity  {
     }
 
     //Call number immediately, call a non-static method from a static method
-    public static void callNumber(Context mContext) {
+    public void callNumber(Context mContext) {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(intent);
@@ -80,7 +119,106 @@ public class TestAlertsActivity extends AppCompatActivity  {
         }
     }
 
+    public void endCall(int delay) {
+        //delay in approximate seconds??? is converted to milliseconds
+        delay = delay*1000;
+        handler.postDelayed(new Runnable() {
+            @SuppressLint({"DiscouragedPrivateApi", "SoonBlockedPrivateApi"})
+            @Override
+            public void run() {
+                if (Build.VERSION.SDK_INT >= 28) {
+                    final TelecomManager telecomManager = (TelecomManager) mContext.getSystemService(Context.TELECOM_SERVICE);
+                    if (telecomManager != null && ContextCompat.checkSelfPermission(mContext, Manifest.permission.ANSWER_PHONE_CALLS) == PackageManager.PERMISSION_GRANTED) {
+                        telecomManager.endCall();
+                    }
+                }else {
+                    TelephonyManager tm;
+                    tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+                    Method m1 = null;
+                    try {
+                        //if (Build.VERSION.SDK_INT < 30) {
+                        m1 = tm.getClass().getDeclaredMethod("getITelephony");
+                        //}
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+                    assert m1 != null;
+                    m1.setAccessible(true);
+                    Object iTelephony = null;
+                    try {
+                        iTelephony = m1.invoke(tm);
+                        //} catch (IllegalAccessException | InvocationTargetException e) {
+                    } catch(Exception e) { //All exceptions are caught here as all are inheriting java.lang.Exception
+                        e.printStackTrace();
+                    }
+
+                    Method m3 = null;
+                    try {
+                        assert iTelephony != null;
+                        m3 = iTelephony.getClass().getDeclaredMethod("endCall");
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        assert m3 != null;
+                        m3.invoke(iTelephony);
+                        //} catch (IllegalAccessException | InvocationTargetException e) {
+                    } catch(Exception e) { //All exceptions are caught here as all are inheriting java.lang.Exception
+                        e.printStackTrace();
+                    }
+                }
+            //Finish TestAlertsActivity
+            finish();
+            }
+        }, delay);
+    }
+
+    public void startAlerts(Context context, String alertType){
+        //Send SMS
+        if (enableSMS){
+            sendSmsByManager(alertType);
+        }
+
+        //Call phone number in preferences
+        if (enableCall) {
+
+            //Call phone number in preferences
+            callNumber(context);
+
+            //End call after delay. NB don't make it too small 20 will ring for about 10s
+            int callEndDelay = 20 ;
+            endCall(callEndDelay);
+        }
+
+//TODO Check services starting and stopping OK
+        //Start CameraService overrides VideoService
+        if (enablePhotos){
+            Intent svc = new Intent(getBaseContext(), CameraService.class);
+            startService(svc);
+            //Finish TestAlertsActivity
+            finish();
+        }else{
+            //Start VideoService
+            if (enableVideo){
+                //Intent svc = new Intent(getBaseContext(), VideoService.class);
+                Intent svc = new Intent(this, VideoService.class);
+                startService(svc);
+                //Finish TestAlertsActivity
+                finish();
+            }
+        }
+    }
+
 }
+
+
+//Call number immediately, call a non-static method from a static method
+/*    public static void callNumber(Context mContext) {
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        mContext.startActivity(intent);
+    }*/
 
 //public class TestAlertsActivity extends AppCompatActivity implements OnClickListener {
 
