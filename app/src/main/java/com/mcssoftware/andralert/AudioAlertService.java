@@ -1,8 +1,5 @@
 package com.mcssoftware.andralert;
 
-
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -10,28 +7,18 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.telecom.TelecomManager;
-import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
-
 import java.io.IOException;
-import java.lang.reflect.Method;
 
-import static com.mcssoftware.andralert.MainActivity.enableCall;
-import static com.mcssoftware.andralert.MainActivity.enablePhotos;
-import static com.mcssoftware.andralert.MainActivity.enableVideo;
 import static com.mcssoftware.andralert.MainActivity.noiseThreshold;
-import static com.mcssoftware.andralert.MainActivity.enableSMS;
 
 public class AudioAlertService extends Service {
     public AudioAlertService() {
@@ -51,10 +38,8 @@ public class AudioAlertService extends Service {
     private int HitCount =0;
     //Handler for audio sample rate
     private final Handler handler = new Handler(Looper.getMainLooper());
-    //Handler for delay till dialler stops in endCall
-    private final Handler handler2 = new Handler(Looper.getMainLooper());
     //Handler for rearmDelay after alarm has triggered
-    private final Handler handler3 = new Handler(Looper.getMainLooper());
+    private final Handler handler1 = new Handler(Looper.getMainLooper());
 
     private final Runnable PollTask = new Runnable() {
         public void run() {
@@ -62,46 +47,18 @@ public class AudioAlertService extends Service {
             if ((amp > noiseThreshold)) {
                 HitCount++;
                 if (HitCount > 10){
-
-                    //Send SMS
-                    if (enableSMS){
-                        TestAlertsActivity.sendSmsByManager("Alarm - Audio alert triggered");
-                    }
-
-                    //Call phone number in preferences
-                    if (enableCall) {
-
-                        //Call phone number in preferences
-                        TestAlertsActivity.callNumber(mContext);
-
-                        //End call after delay. NB don't make it too small 20 will ring for about 10s
-                        int callEndDelay = 20 ;
-                        endCall(callEndDelay);
-                    }
-
-                    //Start CameraService overrides VideoService
-                    if (enablePhotos){
-                        Intent svc = new Intent(getBaseContext(), CameraService.class);
-                        startService(svc);
-                    }else{
-                        //Start VideoService
-                        if (enableVideo){
-                            Intent svc = new Intent(getBaseContext(), VideoService.class);
-                            startService(svc);
-                        }
-                    }
-
+                    triggerAlerts();
 
                     //Stop audio monitor
                     stopAudioMonitor();
 
                     //re-arming delay
                     int rearmDelay = 120000;
-                    handler3.postDelayed(new Runnable() {
+                    handler1.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             //Start audio monitor after delay
-                            Toast.makeText(mContext, "Audiomonitor re-armed", Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, "Audio monitor re-enabled", Toast.LENGTH_LONG).show();
                             startAudioMonitor();
                         }
                     }, rearmDelay);
@@ -163,9 +120,7 @@ public class AudioAlertService extends Service {
     }
 
     void startAudioMonitor() {
-
         HitCount = 0;
-
         if (mRecorder == null) {
             mRecorder = new MediaRecorder();
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -183,7 +138,6 @@ public class AudioAlertService extends Service {
     }
 
     void stopAudioMonitor() {
-
         handler.removeCallbacks(PollTask);
         if (mRecorder != null)
         {
@@ -196,7 +150,6 @@ public class AudioAlertService extends Service {
                 e.printStackTrace();
             }
         }
-        //stopSelf();
     }
 
     double getAmplitude() {
@@ -204,7 +157,6 @@ public class AudioAlertService extends Service {
             return  (mRecorder.getMaxAmplitude()/2700.0);
         else
             return 0;
-
     }
 
     public void onDestroy() {
@@ -213,7 +165,30 @@ public class AudioAlertService extends Service {
         super.onDestroy();
     }
 
-    private void endCall(int delay) {
+    public void triggerAlerts(){
+        Toast.makeText(getApplicationContext(), "Audio alert detected",
+                Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, TestAlertsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra("alertType","Audio alert detected");
+        startActivity(intent);
+    }
+}
+
+
+/*                    Intent intent = new Intent(this, TestAlertsActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("alertType","Audio Alert");
+                    startActivity(intent);*/
+
+/*                    TestAlertsActivity tA = new TestAlertsActivity();
+                    //tA.callNumber(mContext);
+                    tA.startAlerts(mContext, "Audio alert");*/
+
+/*    //Handler for delay till dialler stops in endCall
+    private final Handler handler2 = new Handler(Looper.getMainLooper());*/
+
+/*    public void endCall(int delay) {
         //delay in approximate seconds??? is converted to milliseconds
         delay = delay*1000;
         handler2.postDelayed(new Runnable() {
@@ -266,8 +241,66 @@ public class AudioAlertService extends Service {
         }, delay);
     }
 
+    public void startAlerts(){
+        //Send SMS
+        if (enableSMS){
+            TestAlertsActivity.sendSmsByManager("Alarm - Audio alert triggered");
+        }
 
-}
+        //Call phone number in preferences
+        if (enableCall) {
+
+            //Call phone number in preferences
+            TestAlertsActivity.callNumber(mContext);
+
+            //End call after delay. NB don't make it too small 20 will ring for about 10s
+            int callEndDelay = 20 ;
+            endCall(callEndDelay);
+        }
+
+        //Start CameraService overrides VideoService
+        if (enablePhotos){
+            Intent svc = new Intent(getBaseContext(), CameraService.class);
+            startService(svc);
+        }else{
+            //Start VideoService
+            if (enableVideo){
+                Intent svc = new Intent(getBaseContext(), VideoService.class);
+                startService(svc);
+            }
+        }
+    }*/
+
+
+
+
+/*                    //Send SMS
+                    if (enableSMS){
+                        TestAlertsActivity.sendSmsByManager("Alarm - Audio alert triggered");
+                    }
+
+                    //Call phone number in preferences
+                    if (enableCall) {
+
+                        //Call phone number in preferences
+                        TestAlertsActivity.callNumber(mContext);
+
+                        //End call after delay. NB don't make it too small 20 will ring for about 10s
+                        int callEndDelay = 20 ;
+                        endCall(callEndDelay);
+                    }
+
+                    //Start CameraService overrides VideoService
+                    if (enablePhotos){
+                        Intent svc = new Intent(getBaseContext(), CameraService.class);
+                        startService(svc);
+                    }else{
+                        //Start VideoService
+                        if (enableVideo){
+                            Intent svc = new Intent(getBaseContext(), VideoService.class);
+                            startService(svc);
+                        }
+                    }*/
 
 
 
